@@ -1,23 +1,22 @@
+// import express
 const express = require('express');
+// import db connection
 const db = require('./config/connection');
+// import routes
 const routes = require('./routes');
-
-const cwd = process.cwd();
-
-const PORT = process.env.PORT || 3001;
+// create port
+const port = process.env.PORT || 3001;
+// instantiate express
 const app = express();
-
-// Note: not necessary for the Express server to function. This just helps indicate what activity's server is running in the terminal.
-const activity = cwd.includes('01-Activities')
-  ? cwd.split('01-Activities')[1]
-  : cwd;
-
+// use routes
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(routes);
 
+
+// connect to db and server
 db.once('open', () => {
-  app.listen(PORT, () => {
-    console.log(`API server for ${activity} running on port ${PORT}!`);
-  });
+    app.listen(port, () => {
+        console.log(`API server running on port ${port}!`);
+    });
 });
