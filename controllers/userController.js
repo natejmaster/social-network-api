@@ -31,6 +31,43 @@ module.exports = {
     }
   },
 
+  // Update a user
+async updateUser(req, res) {
+  try {
+    const user = await User.findByIdAndUpdate(req.params.userId, req.body, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: 'No user with that ID' });
+    }
+
+    res.json(user);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json(err);
+  }
+},
+// Remove a user
+async deleteUser(req, res) {
+  try {
+    const user = await User.findByIdAndDelete(req.params.userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'No user with that ID' });
+    }
+
+    //Remove a user's associated thoughts
+    await Thought.deleteMany({ userId: req.params.userId });
+
+    res.json({ message: 'User and associated thoughts deleted successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json(err);
+  }
+},
+
   //Add a friend
   async addFriend(req, res) {
     try {
